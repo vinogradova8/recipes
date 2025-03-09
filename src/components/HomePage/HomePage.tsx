@@ -13,7 +13,7 @@ export const HomePage: React.FC = () => {
 
   const BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
   const itemsPerPage = 3;
-  const delay = 500;
+  const delay = 1000;
 
   const fetchRecipes = (query: string) => {
     fetch(`${BASE_URL}/search.php?s=${query}`)
@@ -83,27 +83,29 @@ export const HomePage: React.FC = () => {
 
   return (
     <>
-      <h1>Recipes</h1>
-      <Link to={`/recipe/cart`}>Cart</Link>
+      <header className="header">
+        <h1>Recipes</h1>
+        <Link to={`/recipe/cart`}>Cart</Link>
 
-      <input
-        type="text"
-        placeholder="Search for a recipe..."
-        value={searchQuery}
-        onChange={e => setSearchQuery(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Search for a recipe..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+        />
 
-      <select
-        value={selectedCategory}
-        onChange={e => setSelectedCategory(e.target.value)}
-      >
-        <option value="All">All</option>
-        {categories.map(category => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
+        <select
+          value={selectedCategory}
+          onChange={e => setSelectedCategory(e.target.value)}
+        >
+          <option value="All">All</option>
+          {categories.map(category => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </header>
 
       <div className="recipes">
         {paginatedRecipes?.length !== 0 ? (
