@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.scss';
 import { Outlet } from 'react-router-dom';
+import { RecipesProvider } from './RecipesContext';
 
 // interface Props {
 //   onClick: () => void;
@@ -14,5 +15,9 @@ import { Outlet } from 'react-router-dom';
 // ));
 
 export const App: React.FC = () => {
-  return <Outlet />;
+  return (
+    <RecipesProvider>
+      <Outlet />
+    </RecipesProvider>
+  );
 };
