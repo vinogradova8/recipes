@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card } from '../Card';
+import './HomePage.scss';
 
 type RecipesFull = {
   idMeal: 'string';
@@ -58,18 +59,38 @@ type RecipesFull = {
 };
 
 export const HomePage: React.FC = () => {
-  const [recipes, setRecipes] = useState<RecipesFull[]>([]);
+  const [recipes, setRecipes] = useState<RecipesFull[]>();
+
+  // useEffect(() => {
+  //   fetch('www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata')
+  //     .then(response => response.php())
+  //     .then(setRecipes);
+  // }, []);
 
   useEffect(() => {
-    fetch('www.themealdb.com/api/json/v1/1/')
+    fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=')
       .then(response => response.json())
-      .then(setRecipes);
+      .then(data => setRecipes(data.meals || []));
   }, []);
 
   return (
     <>
       <h1>Recipes</h1>
-      {recipes.map(recipe => (
+      <div className="recipes">
+        {recipes &&
+          recipes.map(recipe => (
+            <Card
+              key={recipe.idMeal}
+              // id={recipe.idMeal}
+              title={recipe.strMeal}
+              image={recipe.strMealThumb}
+              category={recipe.strCategory}
+              source={recipe.strSource}
+            />
+          ))}
+      </div>
+
+      {/* {recipes.map(recipe => (
         <Card
           key={recipe.idMeal}
           // id={recipe.idMeal}
@@ -77,7 +98,7 @@ export const HomePage: React.FC = () => {
           category={recipe.strCategory}
           source={recipe.strSource}
         />
-      ))}
+      ))} */}
     </>
   );
 };
