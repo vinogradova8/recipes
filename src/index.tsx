@@ -14,7 +14,6 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         <Route index element={<HomePage />}></Route>
         <Route path="/recipe/:itemId" element={<RecipeDetailsPage />} />
         <Route path="/recipe/cart" element={<Cart />} />
-
         <Route
           path="*"
           element={

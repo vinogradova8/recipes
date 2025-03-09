@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card } from '../Card';
+import { Card } from '../RecipeCard';
 import './HomePage.scss';
 import { RecipeFull } from '../../types/RecipeFull';
 import { Link } from 'react-router-dom';
@@ -22,11 +22,11 @@ export const HomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    const handler = setTimeout(() => {
+    const handlerRecipeSearch = setTimeout(() => {
       fetchRecipes(searchQuery);
     }, delay);
 
-    return () => clearTimeout(handler);
+    return () => clearTimeout(handlerRecipeSearch);
   }, [searchQuery]);
 
   useEffect(() => {
@@ -82,12 +82,15 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="page">
       <header className="header">
         <h1>Recipes</h1>
-        <Link to={`/recipe/cart`}>Cart</Link>
+        <Link className="link" to={`/recipe/cart`}>
+          Cart
+        </Link>
 
         <input
+          className="input"
           type="text"
           placeholder="Search for a recipe..."
           value={searchQuery}
@@ -95,6 +98,7 @@ export const HomePage: React.FC = () => {
         />
 
         <select
+          className="select"
           value={selectedCategory}
           onChange={e => setSelectedCategory(e.target.value)}
         >
@@ -143,6 +147,6 @@ export const HomePage: React.FC = () => {
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 };

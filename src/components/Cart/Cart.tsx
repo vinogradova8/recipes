@@ -1,30 +1,7 @@
-// import { useContext } from 'react';
-// import { RecipesContext } from '../../RecipesContext';
-// import { Card } from '../Card';
-
-// export const Cart: React.FC = () => {
-//   const { selectedRecipes } = useContext(RecipesContext);
-
-//   return (
-//     <>
-//       <div>Cart</div>
-//       <div className="recipes">
-//         {selectedRecipes.length === 0 ? (
-//           <p>No recipes in cart</p>
-//         ) : (
-//           selectedRecipes.map(recipe => (
-//             <Card key={recipe.idMeal} recipe={recipe} />
-//           ))
-//         )}
-//       </div>
-//     </>
-//   );
-// };
-
 import { useContext } from 'react';
 import { RecipesContext } from '../../RecipesContext';
 import { RecipeFull } from '../../types/RecipeFull';
-import { Card } from '../Card';
+import { Card } from '../RecipeCard';
 import { Link } from 'react-router-dom';
 
 export const Cart: React.FC = () => {
@@ -57,28 +34,42 @@ export const Cart: React.FC = () => {
 
   return (
     <div>
-      <Link to={`/`}>Home</Link>
-      <h2>Selected Recipes</h2>
+      <Link className="link" to={`/`}>
+        Home
+      </Link>
+
       {selectedRecipes.length === 0 ? (
         <p>No recipes selected.</p>
       ) : (
-        <div className="recipes">
-          {selectedRecipes.map(recipe => (
-            <>
-              <Card key={recipe.idMeal} recipe={recipe} />
-            </>
-          ))}
-        </div>
-      )}
+        <>
+          <h2>Selected Recipes</h2>
+          <div className="recipes">
+            {selectedRecipes.map(recipe => (
+              <>
+                <Card key={recipe.idMeal} recipe={recipe} />
+              </>
+            ))}
+          </div>
+          <h2>All Ingredients</h2>
+          <ul>
+            {Object.entries(combinedIngredients).map(([ingredient, count]) => (
+              <li key={ingredient}>
+                {ingredient} {count > 1 && `x${count}`}
+              </li>
+            ))}
+          </ul>
 
-      <h2>All Ingredients</h2>
-      <ul>
-        {Object.entries(combinedIngredients).map(([ingredient, count]) => (
-          <li key={ingredient}>
-            {ingredient} {count > 1 && `x${count}`}
-          </li>
-        ))}
-      </ul>
+          <h2>All Instructions</h2>
+          <ul>
+            {selectedRecipes.map(recipe => (
+              <li key={recipe.idMeal}>
+                <h3>{recipe.strMeal}</h3>
+                <p>{recipe.strInstructions}</p>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };

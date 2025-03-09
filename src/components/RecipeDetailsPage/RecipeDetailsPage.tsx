@@ -1,10 +1,36 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { RecipeFull } from '../../types/RecipeFull';
+import { RecipesContext } from '../../RecipesContext';
+import './RecipeDetailsPage.scss';
 
 export const RecipeDetailsPage: React.FC = ({}) => {
   const { itemId } = useParams<{ itemId: string }>();
-  const [recipe, setRecipe] = useState<RecipeFull | null>(null);
+  const [recipe, setRecipe] = useState<RecipeFull>();
+
+  const { selectedRecipes, setSelectedRecipes } = useContext(RecipesContext);
+
+  const isSelected = selectedRecipes.some(r => r.idMeal === recipe?.idMeal);
+
+  const handleAddToCart = () => {
+    if (!recipe) {
+      return;
+    }
+
+    setSelectedRecipes(prev => {
+      if (prev.some(r => r.idMeal === recipe?.idMeal)) {
+        return prev.filter(r => r.idMeal !== recipe?.idMeal);
+      }
+
+      return [...prev, recipe];
+    });
+  };
+
+  const removeRecipe = (id: string) => {
+    setSelectedRecipes(
+      selectedRecipes.filter(currentrecipe => currentrecipe.idMeal !== id),
+    );
+  };
 
   useEffect(() => {
     const BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
@@ -31,13 +57,15 @@ export const RecipeDetailsPage: React.FC = ({}) => {
 
   return (
     <div className="recipe-details">
-      <Link to={`/`}>Home</Link>
+      <Link className="link" to={`/`}>
+        Home
+      </Link>
       <h2>{recipe?.strMeal}</h2>
       <p>
-        <strong>Category:</strong> {recipe?.strCategory}
+        <span>Category:</span> {recipe?.strCategory}
       </p>
       <p>
-        <strong>Region:</strong> {recipe?.strArea}
+        <span>Region:</span> {recipe?.strArea}
       </p>
       <img src={recipe?.strMealThumb} alt={recipe?.strMeal} />
       <h3>Ingredients:</h3>
@@ -48,28 +76,36 @@ export const RecipeDetailsPage: React.FC = ({}) => {
           </li>
         ))}
       </ul>
-      <h3>Cooking Instructions:</h3>
+      <h3>Instructions:</h3>
       <p>{recipe?.strInstructions}</p>
       {recipe?.strYoutube && (
         <p>
-          <strong>Video Recipe:</strong>{' '}
-          <a
-            href={recipe?.strYoutube}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <span>Video Recipe:</span>
+          <a href={recipe?.strYoutube} target="_blank" rel="noreferrer">
             Watch on YouTube
           </a>
         </p>
       )}
       {recipe?.strSource && (
         <p>
-          <strong>Source:</strong>{' '}
-          <a href={recipe?.strSource} target="_blank" rel="noopener noreferrer">
+          <span>Source:</span>
+          <a href={recipe?.strSource} target="_blank" rel="noreferrer">
             View original recipe
           </a>
         </p>
       )}
+
+      <div className="card__actions">
+        <button type="button" onClick={handleAddToCart} disabled={isSelected}>
+          {isSelected ? 'Added' : 'Add to cart'}
+        </button>
+        <button
+          onClick={() => removeRecipe(recipe?.idMeal || '')}
+          disabled={!isSelected}
+        >
+          Remove
+        </button>
+      </div>
     </div>
   );
 };
