@@ -15,11 +15,18 @@ export const HomePage: React.FC = () => {
   const itemsPerPage = 3;
   const delay = 1000;
 
-  const fetchRecipes = (query: string) => {
-    fetch(`${BASE_URL}/search.php?s=${query}`)
-      .then(response => response.json())
-      .then(data => setRecipes(data.meals || []));
-  };
+  // const fetchRecipes = (query: string) => {
+  //   fetch(`${BASE_URL}/search.php?s=${query}`)
+  //     .then(response => response.json())
+  //     .then(data => setRecipes(data.meals || []));
+  // };
+
+  async function fetchRecipes(query: string) {
+    const response = await fetch(`${BASE_URL}/search.php?s=${query}`);
+    const data = await response.json();
+
+    setRecipes(data.meals || []);
+  }
 
   useEffect(() => {
     const handlerRecipeSearch = setTimeout(() => {

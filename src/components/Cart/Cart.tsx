@@ -1,36 +1,50 @@
 import { useContext } from 'react';
 import { RecipesContext } from '../../RecipesContext';
-import { RecipeFull } from '../../types/RecipeFull';
 import { Card } from '../RecipeCard';
 import { Link } from 'react-router-dom';
 
 export const Cart: React.FC = () => {
   const { selectedRecipes } = useContext(RecipesContext);
 
-  const getCombinedIngredients = () => {
-    const ingredientsMap: Record<string, number> = {};
+  const getIngredients = () => {
+    const ingredientsArray: [string, string][] = [];
 
     selectedRecipes.forEach(recipe => {
-      for (let i = 1; i <= 20; i++) {
-        const ingredient = recipe[`strIngredient${i}` as keyof RecipeFull];
-        const measure = recipe[`strMeasure${i}` as keyof RecipeFull];
+      const entries = Object.entries(recipe);
 
-        if (ingredient && ingredient.trim() !== '') {
-          const key = `${ingredient} (${measure || ''})`;
+      const entriesIngredients = entries
+        .filter(
+          entry =>
+            entry[0].includes('strIngredient') && entry[1]?.trim() !== '',
+        )
+        .map(entry => entry[1]);
 
-          if (ingredientsMap[key]) {
-            ingredientsMap[key] += 1;
-          } else {
-            ingredientsMap[key] = 1;
-          }
+      const entriesMeasures = entries
+        .filter(
+          entry => entry[0].includes('strMeasure') && entry[1]?.trim() !== '',
+        )
+        .map(entry => entry[1]);
+
+      for (let i = 0; i < entriesIngredients.length; i++) {
+        const ingredientName = entriesIngredients[i] || '';
+        const measure = entriesMeasures[i] || '';
+
+        const index = ingredientsArray.findIndex(
+          item => item[0] === ingredientName,
+        );
+
+        if (index !== -1) {
+          ingredientsArray[index][1] += `, ${measure}`;
+        } else {
+          ingredientsArray.push([ingredientName, measure]);
         }
       }
     });
 
-    return ingredientsMap;
+    return ingredientsArray;
   };
 
-  const combinedIngredients = getCombinedIngredients();
+  const combinedIngredients = getIngredients();
 
   return (
     <div>
@@ -52,9 +66,9 @@ export const Cart: React.FC = () => {
           </div>
           <h2>All Ingredients</h2>
           <ul>
-            {Object.entries(combinedIngredients).map(([ingredient, count]) => (
-              <li key={ingredient}>
-                {ingredient} {count > 1 && `x${count}`}
+            {combinedIngredients.map(item => (
+              <li key={item[0]}>
+                {item[0]} {`(${item[1]})`}
               </li>
             ))}
           </ul>
