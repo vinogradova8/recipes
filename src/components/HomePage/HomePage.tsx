@@ -1,56 +1,86 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Card } from '../RecipeCard';
 import './HomePage.scss';
 import { RecipeFull } from '../../types/RecipeFull';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 
 export const HomePage: React.FC = () => {
   const [recipes, setRecipes] = useState<RecipeFull[]>();
   const [categories, setCategories] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') || '';
+  const category = searchParams.get('category') || 'All';
+
+  const [appliedQuery, setAppliedQuery] = useState(query);
+
+  const applyQuery = useMemo(() => debounce(setAppliedQuery, 1000), []);
+
+  const handleSetQuerySearchParameter = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set('query', `${event?.target.value}`);
+
+    applyQuery(event?.target.value);
+
+    if (event.target.value === '') {
+      params.delete('query');
+    }
+
+    setSearchParams(params);
+  };
+
+  const handleSetCategorySearchParameter = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set('category', event.target.value);
+
+    if (event.target.value === 'All') {
+      params.delete('category');
+    }
+
+    setSearchParams(params);
+  };
 
   const BASE_URL = 'https://www.themealdb.com/api/json/v1/1';
   const itemsPerPage = 3;
-  const delay = 1000;
 
-  // const fetchRecipes = (query: string) => {
-  //   fetch(`${BASE_URL}/search.php?s=${query}`)
-  //     .then(response => response.json())
-  //     .then(data => setRecipes(data.meals || []));
-  // };
-
-  async function fetchRecipes(query: string) {
-    const response = await fetch(`${BASE_URL}/search.php?s=${query}`);
+  async function fetchRecipes(searchQuery: string) {
+    const response = await fetch(`${BASE_URL}/search.php?s=${searchQuery}`);
     const data = await response.json();
 
     setRecipes(data.meals || []);
   }
 
   useEffect(() => {
-    const handlerRecipeSearch = setTimeout(() => {
-      fetchRecipes(searchQuery);
-    }, delay);
+    applyQuery(query);
 
-    return () => clearTimeout(handlerRecipeSearch);
-  }, [searchQuery]);
+    fetchRecipes(appliedQuery);
+  }, [appliedQuery, applyQuery, query]);
+
+  async function getCategories() {
+    const response = await fetch(`${BASE_URL}/categories.php`);
+    const data = await response.json();
+
+    setCategories(
+      data.categories.map((c: { strCategory: string }) => c.strCategory),
+    );
+  }
 
   useEffect(() => {
-    fetch(`${BASE_URL}/categories.php`)
-      .then(response => response.json())
-      .then(data =>
-        setCategories(
-          data.categories.map((c: { strCategory: string }) => c.strCategory),
-        ),
-      );
+    getCategories();
   }, []);
 
   const filteredRecipes =
-    (selectedCategory === 'All'
+    (category === 'All'
       ? recipes
-      : recipes?.filter(recipe => recipe.strCategory === selectedCategory)) ||
-    [];
+      : recipes?.filter(recipe => recipe.strCategory === category)) || [];
 
   const totalPages = Math.ceil(filteredRecipes.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -100,19 +130,19 @@ export const HomePage: React.FC = () => {
           className="input"
           type="text"
           placeholder="Search for a recipe..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          value={query}
+          onChange={handleSetQuerySearchParameter}
         />
 
         <select
           className="select"
-          value={selectedCategory}
-          onChange={e => setSelectedCategory(e.target.value)}
+          value={category}
+          onChange={handleSetCategorySearchParameter}
         >
           <option value="All">All</option>
-          {categories.map(category => (
-            <option key={category} value={category}>
-              {category}
+          {categories.map(currentCategory => (
+            <option key={currentCategory} value={currentCategory}>
+              {currentCategory}
             </option>
           ))}
         </select>
