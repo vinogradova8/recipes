@@ -12,18 +12,29 @@ export const Cart: React.FC = () => {
     selectedRecipes.forEach(recipe => {
       const entries = Object.entries(recipe);
 
-      const entriesIngredients = entries
-        .filter(
-          entry =>
-            entry[0].includes('strIngredient') && entry[1]?.trim() !== '',
-        )
-        .map(entry => entry[1]);
+      const entriesIngredients = entries.reduce<string[]>((acc, entry) => {
+        if (
+          entry[0].includes('strIngredient') &&
+          entry[1]?.trim() !== '' &&
+          entry[1] !== null
+        ) {
+          acc.push(entry[1]);
+        }
 
-      const entriesMeasures = entries
-        .filter(
-          entry => entry[0].includes('strMeasure') && entry[1]?.trim() !== '',
-        )
-        .map(entry => entry[1]);
+        return acc;
+      }, []);
+
+      const entriesMeasures = entries.reduce<string[]>((acc, entry) => {
+        if (
+          entry[0].includes('strMeasure') &&
+          entry[1]?.trim() !== '' &&
+          entry[1] !== null
+        ) {
+          acc.push(entry[1]);
+        }
+
+        return acc;
+      }, []);
 
       for (let i = 0; i < entriesIngredients.length; i++) {
         const ingredientName = entriesIngredients[i] || '';
