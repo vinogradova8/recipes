@@ -89,7 +89,7 @@ export const HomePage: React.FC = () => {
           onChange={handleSetCategorySearchParameter}
         >
           <option value="All">All</option>
-          {categories.map(currentCategory => (
+          {categories.map((currentCategory: string) => (
             <option key={currentCategory} value={currentCategory}>
               {currentCategory}
             </option>
