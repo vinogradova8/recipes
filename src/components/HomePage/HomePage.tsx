@@ -3,6 +3,7 @@ import './HomePage.scss';
 import { Link } from 'react-router-dom';
 import { useRecipes } from '../../hooks/useRecipes';
 import { usePagination } from '../../hooks/usePagination';
+import { FilterPanel } from '../FilterPanel';
 
 export const HomePage: React.FC = () => {
   const {
@@ -47,25 +48,25 @@ export const HomePage: React.FC = () => {
 
   // Функция для обновления searchValue при вводе
 
-  const handleSetQuerySearchParameter = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setSearchValue(event.target.value);
-  };
+  // const handleSetQuerySearchParameter = (
+  //   event: React.ChangeEvent<HTMLInputElement>,
+  // ) => {
+  //   setSearchValue(event.target.value);
+  // };
 
-  const handleSetCategorySearchParameter = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const params = new URLSearchParams(searchParams);
+  // const handleSetCategorySearchParameter = (
+  //   event: React.ChangeEvent<HTMLSelectElement>,
+  // ) => {
+  //   const params = new URLSearchParams(searchParams);
 
-    params.set('category', event.target.value);
+  //   params.set('category', event.target.value);
 
-    if (event.target.value === 'All') {
-      params.delete('category');
-    }
+  //   if (event.target.value === 'All') {
+  //     params.delete('category');
+  //   }
 
-    setSearchParams(params);
-  };
+  //   setSearchParams(params);
+  // };
 
   return (
     <div className="page">
@@ -75,7 +76,7 @@ export const HomePage: React.FC = () => {
           Cart
         </Link>
 
-        <input
+        {/* <input
           className="input"
           type="text"
           placeholder="Search for a recipe..."
@@ -94,7 +95,16 @@ export const HomePage: React.FC = () => {
               {currentCategory}
             </option>
           ))}
-        </select>
+        </select> */}
+
+        <FilterPanel
+          searchValue={searchValue}
+          setSearchValue={setSearchValue}
+          category={category}
+          categories={categories}
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+        />
       </header>
 
       <div className="recipes">

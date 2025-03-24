@@ -5,6 +5,7 @@ import { HomePage } from './components/HomePage';
 import { RecipeDetailsPage } from './components/RecipeDetailsPage';
 import { Cart } from './components/Cart';
 import { RecipesProvider } from './RecipesContext';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
@@ -29,5 +30,6 @@ createRoot(document.getElementById('root') as HTMLElement).render(
         </Routes>
       </HashRouter>
     </RecipesProvider>
+    <ReactQueryDevtools initialIsOpen={true} />
   </QueryClientProvider>,
 );
