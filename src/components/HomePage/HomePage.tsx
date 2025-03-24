@@ -99,11 +99,11 @@ export const HomePage: React.FC = () => {
 
         <FilterPanel
           searchValue={searchValue}
-          setSearchValue={setSearchValue}
+          onSearchChange={setSearchValue}
           category={category}
           categories={categories}
           searchParams={searchParams}
-          setSearchParams={setSearchParams}
+          onSearchParamsChange={setSearchParams}
         />
       </header>
 
