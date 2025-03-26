@@ -25,48 +25,6 @@ export const HomePage: React.FC = () => {
     goToPage,
     getPagination,
   } = usePagination(filteredRecipes);
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  // ) => {
-  //   const params = new URLSearchParams(searchParams);
-
-  //   params.set('query', `${event?.target.value}`);
-
-  //   applyQuery(event?.target.value);
-
-  //   // if (event.target.value === '') {
-  //   //   params.delete('query');
-  //   // }
-
-  //   if (debouncedQuery) {
-  //     params.set('query', debouncedQuery);
-  //   } else {
-  //     params.delete('query');
-  //   }
-
-  //   setSearchParams(params);
-  // };
-
-  // Функция для обновления searchValue при вводе
-
-  // const handleSetQuerySearchParameter = (
-  //   event: React.ChangeEvent<HTMLInputElement>,
-  // ) => {
-  //   setSearchValue(event.target.value);
-  // };
-
-  // const handleSetCategorySearchParameter = (
-  //   event: React.ChangeEvent<HTMLSelectElement>,
-  // ) => {
-  //   const params = new URLSearchParams(searchParams);
-
-  //   params.set('category', event.target.value);
-
-  //   if (event.target.value === 'All') {
-  //     params.delete('category');
-  //   }
-
-  //   setSearchParams(params);
-  // };
 
   return (
     <div className="page">
@@ -75,27 +33,6 @@ export const HomePage: React.FC = () => {
         <Link className="link" to={`/recipe/cart`}>
           Cart
         </Link>
-
-        {/* <input
-          className="input"
-          type="text"
-          placeholder="Search for a recipe..."
-          value={searchValue}
-          onChange={handleSetQuerySearchParameter}
-        />
-
-        <select
-          className="select"
-          value={category}
-          onChange={handleSetCategorySearchParameter}
-        >
-          <option value="All">All</option>
-          {categories.map((currentCategory: string) => (
-            <option key={currentCategory} value={currentCategory}>
-              {currentCategory}
-            </option>
-          ))}
-        </select> */}
 
         <FilterPanel
           searchValue={searchValue}

@@ -81,14 +81,14 @@ export const Cart: React.FC = () => {
 
   return (
     <div>
-      <Link className="link" to={`/`}>
-        Home
-      </Link>
+      <div className="header">
+        <Link className="link" to={`/`}>
+          Home
+        </Link>
 
-      {filteredSelectedRecipes.length === 0 ? (
-        <p>No recipes selected.</p>
-      ) : (
-        <>
+        {selectedRecipes.length === 0 ? (
+          <p>No recipes selected.</p>
+        ) : (
           <FilterPanel
             searchValue={searchValue}
             onSearchChange={setSearchValue}
@@ -97,6 +97,11 @@ export const Cart: React.FC = () => {
             searchParams={searchParams}
             onSearchParamsChange={setSearchParams}
           />
+        )}
+      </div>
+
+      {filteredSelectedRecipes.length > 0 && (
+        <>
           <h2>Selected Recipes</h2>
           <div className="recipes">
             {filteredSelectedRecipes.map(recipe => (
@@ -113,7 +118,6 @@ export const Cart: React.FC = () => {
               </li>
             ))}
           </ul>
-
           <h2>All Instructions</h2>
           <ul>
             {selectedRecipes.map(recipe => (
